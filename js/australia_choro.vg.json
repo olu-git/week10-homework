@@ -1,0 +1,100 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 400,
+    "height": 300,
+    "title": "Housing Prices Across Australia",
+    "projection": {
+        "type": "equirectangular"
+    },
+    "params": [
+        {
+            "name": "Year_Selection",
+            "value": 2021,
+            "bind": {
+                "input": "range",
+                "min": 2004,
+                "max": 2021,
+                "step": 1
+            }
+        }
+    ],
+    "data": {
+        "url": "https://raw.githubusercontent.com/olu-git/week10-homework/main/data/australia_housing_cities_final.csv"
+    },
+    "transform": [
+        {
+            "filter": "datum.Year == Year_Selection"
+        }
+    ],
+    "layer": [
+        {
+            "data": {
+                "url": "https://raw.githubusercontent.com/olu-git/week10-homework/main/js/australia_topo.geo.json",
+                "format": {
+                    "type": "topojson",
+                    "feature": "STE11aAust"
+                }
+            },
+            "mark": {
+                "type": "geoshape",
+                "fill": "lightgray",
+                "stroke": "white"
+            }
+        },
+        {
+            "data": {
+                "url": "https://raw.githubusercontent.com/olu-git/week10-homework/main/data/australia_housing_cities_final.csv"
+            },
+            "transform": [
+                {
+                    "filter": "datum.Year == Year_Selection"
+                }
+            ],
+            "encoding": {
+                "longitude": {
+                    "field": "lon",
+                    "type": "quantitative"
+                },
+                "latitude": {
+                    "field": "lat",
+                    "type": "quantitative"
+                }
+            },
+            "layer": [
+                {
+                    "mark": {
+                        "type": "circle",
+                        "color": "#4592c6",
+                        "tooltip": {
+                            "content": "data"
+                        }
+                    },
+                    "encoding": {
+                        "size": {
+                            "field": "Price",
+                            "type": "quantitative",
+                            "scale": {
+                                "domain": [
+                                    0,
+                                    1000000
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "text",
+                        "dy": -11
+                    },
+                    "encoding": {
+                        "text": {
+                            "field": "City",
+                            "type": "nominal"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
